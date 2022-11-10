@@ -8,7 +8,16 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const coolRouter = require("./routes/cool");
 
+const secrets = require("./secrets");
+
 const app = express();
+
+// set up mongoose connection
+const mongoose = require("mongoose");
+const mongoDB = secrets.mongoUrl;
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
