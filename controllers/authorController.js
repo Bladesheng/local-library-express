@@ -1,8 +1,19 @@
 const Author = require("../models/author");
 
 // Display list of all Authors.
-exports.author_list = (req, res) => {
-  res.send("NOT IMPLEMENTED: Author list");
+exports.author_list = (req, res, next) => {
+  Author.find()
+    .sort([["family_name", "ascending"]])
+    .exec((err, list_author) => {
+      if (err) {
+        return next(err);
+      }
+      //success, so render
+      res.render("author_list", {
+        title: "Author List",
+        author_list: list_author,
+      });
+    });
 };
 
 // Display detail page for a specific Author.
