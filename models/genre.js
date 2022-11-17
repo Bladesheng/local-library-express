@@ -12,7 +12,7 @@ const GenreSchema = new Schema({
 
 // bookinstance's url
 GenreSchema.virtual("url").get(function () {
-  retunr`/catalog/genres/${this._id}`;
+  return `/catalog/genres/${this._id}`;
 });
 
 module.exports = mongoose.model("Genre", GenreSchema);
