@@ -8,16 +8,23 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const catalogRouter = require("./routes/catalog");
 
-const secrets = require("./secrets");
+const dotenv = require("dotenv").config();
+const debug = require("debug")("mongoDB");
+const compression = require("compression");
+const helmet = require("helmet");
 
 const app = express();
 
+app.use(helmet());
+
 // set up mongoose connection
 const mongoose = require("mongoose");
-const mongoDB = secrets.mongoUrl;
+const mongoDB = process.env.MONGODB_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
+db.on("error", () => {
+  debug("MongoDB connection error:");
+});
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -27,6 +34,9 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(compression());
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
